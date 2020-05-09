@@ -2,116 +2,103 @@
 # melee vision
 
 import cv2 as cv
-import custom_detector as mydt
-import matplotlib as plt
-    
-def find_the_thing(frame, last_box):
-    last_box = [int(v) for v in last_box]
-    x, y, w, h = last_box
-
-    img_edges = cv.Canny(frame, 200, 400)
-    cv.imshow('edges', img_edges)
-    contours, hierarchy = cv.findContours(img_edges,
-                                          cv.RETR_TREE,
-                                          cv.CHAIN_APPROX_NONE)
-    cv.drawContours(frame, contours, -1, (128, 128, 128), 3)
-    cv.imshow('', frame)
-    print(len(contours))
-    print(contours[0])
+import custom_detector as dt
+import matplotlib.pyplot as plt
+import numpy as np
+import visualize as vs
 
 def main():
-    video_path = 'video_charsonly.avi'
-
-    framenum = 0
-
+    video_path = 'video_whitebg.avi'
     capture = cv.VideoCapture(video_path)
-
     if not capture.isOpened():
         print('Could not open', video_path)
-        sys.exit(-1)
+        return -1
 
-    width = int(capture.get(cv.CAP_PROP_FRAME_WIDTH))
-    height =  int(capture.get(cv.CAP_PROP_FRAME_HEIGHT))
+    W = int(capture.get(cv.CAP_PROP_FRAME_WIDTH))
+    H =  int(capture.get(cv.CAP_PROP_FRAME_HEIGHT))
     frame_count = int(capture.get(cv.CAP_PROP_FRAME_COUNT))
-    print(width, height, frame_count)
 
-##    capture.set(cv.CAP_PROP_POS_FRAMES, 55);
-    capture.set(cv.CAP_PROP_POS_FRAMES, 180);
-    is_success, frame = capture.read()
+    skip_to_frame = 180
+
+    capture.set(cv.CAP_PROP_POS_FRAMES, skip_to_frame-1)   # skip to good starting frame
+    is_success, start_frame = capture.read()
 
     initial_box = (50, 250, 100, 100)
-    
-##    tracker = cv.TrackerCSRT_create()
-##    tracker.init(frame, initial_box)
 
-    tracker = mydt.MyTracker(frame, initial_box)
+    tracker = dt.MyTracker(start_frame, initial_box)
+    fail_tracker = dt.MyTracker(start_frame)
 
-## output vid
+
     output_vid = cv.VideoWriter()
     FPS = 30
-    output_vid.open('output_video.avi',
+    output_vid.open('output_video_v4.avi',
+##                    'output_video.mp4',   # for web-shareable
                     int(capture.get(cv.CAP_PROP_FOURCC)),
+##                    cv.VideoWriter_fourcc(*'h264'),   # for web-shareable mp4s 
                     FPS,
-                    (width, height),
+                    (W, H),
                     True)
     if not output_vid.isOpened():
         print('could not open output video for write')
         return -1
-
-
-##    cover_mask = (20, 380, 290, 90)
-
-    last_box = None
     
-    while True:
-##    for _ in range(2):
+    output_fail_vid = cv.VideoWriter()
+    output_fail_vid.open('output_fails.avi',
+##                    'output_video.mp4',   # for web-shareable
+                    int(capture.get(cv.CAP_PROP_FOURCC)),
+##                    cv.VideoWriter_fourcc(*'h264'),   # for web-shareable mp4s 
+                    FPS,
+                    (W, H),
+                    True)
+    if not output_fail_vid.isOpened():
+        print('could not open output video for write')
+        return -1
+
+    fails = []
+    framenum = skip_to_frame
+    
+##    while True:
+    while framenum < 3500:
         is_success, frame = capture.read()
         if not is_success:
             print('no more frames')
             break
 
         is_success, box = tracker.update(frame)
+        x0, y0, x1, y1 = box
+        img2 = None
         if not is_success:
             print('tracking failed')
+            fail_tracker.update(frame)
 
-        x0, y0, x1, y1 = box
-        img2 = cv.rectangle(frame, (x0, y0), (x1, y1), (128, 128, 128), 3)
+            img2 = cv.rectangle(frame, (x0, y0), (x1, y1), (0, 0, 255), 3)
+##            cv.imwrite('failed_detections/failure{}.png'.format(framenum), img2)
+            
+            fails.append(framenum)
+
+            br, cntr_len, plte, _, _ = tracker.stats_of(frame, box)
+            #print('brightness:', br, 'longest contour:', cntr_len, 'palette:', plte)
+            output_fail_vid.write(img2)
+        else:
+            img2 = cv.rectangle(frame, (x0, y0), (x1, y1), (128, 128, 128), 3)
+            output_vid.write(img2)
+
         cv.imshow('window', img2)
-
-        framenum += 1
-        last_box = box
 
         keyboard = cv.waitKey(1)
         if keyboard == 'q' or keyboard == 27:
-            break        
+            break
+        framenum += 1
 
-##        is_success, box = tracker.update(frame)
-##        if is_success:
-##            pass
-##        else:
-##            print('tracking failed', framenum)
-####            break
-##            
-##            my_box = mydt.find_it(frame)   # find roi again
-##            x0, y0, x1, y1 = my_box
-##            box = (x0, y0, x1-x0, y1-y0)
-##            tracker = cv.TrackerCSRT_create()
-##            tracker.init(frame, box)
-##            
-##
-##        x, y, w, h = [int(v) for v in box]
-##        img2 = cv.rectangle(frame, (x, y), (x+w, y+h), (128, 128, 128), 3)
-##
-##        cv.imshow('window title', img2)
-            
-    scores = tracker._brightnesses
-    boxes = tracker._boxes
-    print(len(boxes))
-    print(len(scores))
-    scores.sort(reverse=True)
-    print('top 10: ', scores[:10])
-    print('bottom 10:', scores[-10:])
-    print('avg score', sum(scores) / len(scores))    
+    output_vid.release()
+    output_fail_vid.release()
+    capture.release()
+
+
+    # analyze results        
+    vs.display_end_stats(fail_tracker)
+    print(len(fails))
+##    vs.display_end_stats(tracker)
 
 if __name__ == '__main__':
     main()
