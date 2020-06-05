@@ -1,19 +1,19 @@
 # Justin Wong
 # tests for melee vision
 import cv2 as cv
-import custom_detector as dt
+#import custom_detector as dt
 from timeit import default_timer as timer
 import background as bg
 import numpy as np
 import matplotlib.pyplot as plt
 
-def test_custom_detector():
-    sample_img = cv.imread('initialframe.png')
-    print(sample_img)
-    if sample_img is None:
-        print("Couldn't read image")
-        return -1
-    dt.find_it_v2(sample_img)
+#def test_custom_detector():
+#    sample_img = cv.imread('initialframe.png')
+#    print(sample_img)
+#    if sample_img is None:
+#        print("Couldn't read image")
+#        return -1
+#    dt.find_it_v2(sample_img)
 
 def test_int_conversion():
     def slashes():
@@ -24,32 +24,32 @@ def test_int_conversion():
     time(slashes, n=iters)
     time(int_, n=iters)
 
-def test_obj_detection():
-    
-    img = cv.imread('someframe.png')
-    tracker = dt.MyTracker(img)
-    iters = 1000
-
-    time(tracker.find_it_v2, img, n=iters)
-    time(tracker.find_it, img, n=iters)
-
-def test_brightness():
-    img = cv.imread('someframe.png')
-    tracker = dt.MyTracker(img)
-    results = tracker.find_it_v2(img)
-    box = results[0]
-
-    pixels = dt.pixels_at(img, box)
-    cv.imshow('', pixels)
-    brightness = dt.brightness_of(pixels)
-
-    white_box = (0, 0, 50, 50)
-    px_white = dt.pixels_at(img, white_box)
-    br_white = dt.brightness_of(px_white)
-
-    br_whole = dt.brightness_of(img)
-    
-    print(brightness, br_white, br_whole)
+#def test_obj_detection():
+#    
+#    img = cv.imread('someframe.png')
+#    tracker = dt.MyTracker(img)
+#    iters = 1000
+#
+#    time(tracker.find_it_v2, img, n=iters)
+#    time(tracker.find_it, img, n=iters)
+#
+#def test_brightness():
+#    img = cv.imread('someframe.png')
+#    tracker = dt.MyTracker(img)
+#    results = tracker.find_it_v2(img)
+#    box = results[0]
+#
+#    pixels = dt.pixels_at(img, box)
+#    cv.imshow('', pixels)
+#    brightness = dt.brightness_of(pixels)
+#
+#    white_box = (0, 0, 50, 50)
+#    px_white = dt.pixels_at(img, white_box)
+#    br_white = dt.brightness_of(px_white)
+#
+#    br_whole = dt.brightness_of(img)
+#    
+#    print(brightness, br_white, br_whole)
 
 def test_contours():
 
