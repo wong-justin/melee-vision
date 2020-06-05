@@ -39,16 +39,13 @@ class MyTracker():
         return is_success, box
     
     def find_it(self, frame):
-        '''
-        frame is an instance of opencv.Mat
-        '''
         # iter thru increasingly small sections of screen to find most pixel activity
 
 ##        self.grid.sort(reverse=True, key=lambda rect: brightness_of(pixels_at(frame, rect)))
-        self.grid.sort(key=lambda rect: brightness_of(pixels_at(frame, rect)))
-        bbox = self.grid[0]
+        box = max(self.grid,
+                  key=lambda rect: brightness_of(pixels_at(frame, rect)))
         
-        return bbox
+        return box
     
     def find_it_v2(self, frame):
         box = search_nested_quads((0, 0, self.W, self.H),
@@ -137,6 +134,10 @@ class MyTracker():
 
         return True, (x0, y0, x1, y1)
 
+def precise_mask(frame):
+    b = frame < 255#const.BRIGHTNESS_THRESH
+    return b
+
 def predict_next_pos():
     pass
 ##
@@ -156,7 +157,8 @@ def brightness_of(region):
 def contours_of(region):
     edges = cv.Canny(region, 200, 300)
     contours, hierarchy = cv.findContours(edges,
-                                          cv.RETR_TREE,
+                                          cv.RETR_EXTERNAL,
+##                                          cv.RETR_LIST,
                                           cv.CHAIN_APPROX_SIMPLE)
     return contours
 

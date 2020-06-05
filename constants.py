@@ -2,7 +2,7 @@
 # constants for melee vision
 
 #semi arbitrary thresholds that bad frames have shown
-BRIGHTNESS_THRESH = 245 #max
+BRIGHTNESS_THRESH = 249 #max
 CONTOUR_THRESH = 41 #min
 DISTANCE_THRESH = 50 #max
 COLOR_SIM_THRESH = 0.5 #min
