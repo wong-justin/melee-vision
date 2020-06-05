@@ -289,7 +289,7 @@ def test_lines_v2():
 
 def test_brief_descriptor():
 
-    video_path = 'videos/video_fullcolor.avi'
+    video_path = '../videos/video_fullcolor.avi'
     capture = cv.VideoCapture(video_path)
 
     skip = 800
@@ -330,7 +330,7 @@ def test_brief_descriptor():
     cv.imshow('matches', result)
 
 def test_custom_descriptors():
-    video_path = 'videos/video_fullcolor.avi'
+    video_path = '../videos/video_fullcolor.avi'
     capture = cv.VideoCapture(video_path)
 
     skip = 800
@@ -389,7 +389,7 @@ def binary_descriptor(kp, frame, patch_size, test_pairs):
 
 def test_match_descriptors():
 
-    video_path = 'videos/battlefield_camera.avi'
+    video_path = '../videos/battlefield_camera.avi'
     capture = cv.VideoCapture(video_path)
 
     skip = 1750
@@ -521,7 +521,7 @@ def test_match_refining():
     print(len(all_match_sets))
 
 def sample_frames(start=4690, gap=3, video='battlefield_camera.avi'):
-    capture = cv.VideoCapture('videos/battlefield_camera.avi')
+    capture = cv.VideoCapture('../videos/battlefield_camera.avi')
     capture.set(cv.CAP_PROP_POS_FRAMES, start)
     success, frame2 = capture.read()
     capture.set(cv.CAP_PROP_POS_FRAMES, start + gap)
