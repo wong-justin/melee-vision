@@ -28,10 +28,11 @@ Examples:
 - List of most common habits - ledge getups, OOS options, teching (eg 60% roll right, 20% in-place), ...
 - AI trained to play in certain player style, learning from video(s) of that player. (Imagine playing against Armada resurrected as a computer!)
 
-### Demo
-some gifs here
+## Demo
+![keypoints between two frames of battlefield](./demo/keypoints.png)
+More deliverables still underway...
 
-### Usage
+## Usage
 
 #### Docker
 `docker build https://github.com/wong-justin/melee-vision.git -t your/nameforthis`
@@ -49,14 +50,9 @@ To access the notebook, open this file in a browser:
         http://685d642fe150:8888/?token=06c195f789a1511e3b643dc234e015ce4939e06d5b4a2188
      or http://127.0.0.1:8888/?token=06c195f789a1511e3b643dc234e015ce4939e06d5b4a2188
 ```
-Copy the last URL and paste into a browser to view the container's working directory with Jupyter, where there are notebooks for viewing and python source code for deeper digging.
+Copy the last URL and paste into a browser to view the container's working directory with Jupyter, where there are notebooks for viewing and python source code if you want to dig deeper.
 
-### Source Code
-Notebooks are the primary way to interact with the code and see results of different functions.
-[background.py](./background.py) contains the latest code with keypoint detection, descriptor calculating, and matching.
-[test.py](./test.py) has some performance tests and feature tests. Many tests become broken, though,  as modules update in functionality and get refactored.
-
-### Progress
+## Progress
 Current focused goal is to find strong keypoints (eg corners of platforms and ground) in an image of the stage from an arbitrary camera position (ie battlefield),
 use an appropriate descriptor (eg BRIEF), and use those to match two slightly shifted/rotated frames of the same stage.
 
@@ -65,10 +61,15 @@ Normal footage can be compared against that model to find current camera positio
 as well as to find where pixel content differs the most from the model and hence conclude the character's position.
 Note - this strategy fails for stages with ground that morphs, namely Pokemon Stadium and kinda Dreamland.
 
-### Options/Settings
+### Source Code
+Notebooks are the primary way to interact with the code and see results of different functions.
+[background.py](./background.py) contains the latest code with keypoint detection, descriptor calculating, and matching.
+[test.py](./test.py) has some performance tests and feature tests. Many tests become broken, though,  as modules update in functionality and get refactored.
+
+## Options/Settings
 not friendly to configure image processing parameters in the middle of functions, but you can.
 
-### Compatibility
+## Compatibility
 Just run the Docker container; no worries!
 Python packages just in case you need to know:
 
@@ -78,7 +79,7 @@ Python packages just in case you need to know:
 
 You need a browser to view the notebooks from the container; see Usage.
 
-### Contribute
+## Contribute
 
 The code still has a way to go before correctly analyzing a video to any degree.
 Keypoint detection has been ok, but getting and matching descriptors has not been accurate enough yet.
@@ -91,5 +92,5 @@ a nice emulator, custom mods/hacks/codes, an in-game debug mode, guides and setu
 People hesitant to help should be assured that the game is still growing today, 
 and any work done on projects like this will only be more supported and valuable.
 
-### License
+## License
 MIT License
