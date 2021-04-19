@@ -1,5 +1,9 @@
 notebooks/old/
-demo/progress/
 src/old/
-DockerfileBaseImage
-DockerfileFromBase
+demo/progress/
+videos/
+misc/
+env/
+vid_out/
+*.bat
+settings.json
