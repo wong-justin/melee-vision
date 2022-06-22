@@ -1,6 +1,6 @@
 melee==0.30.0
 matplotlib==3.2.1
-numpy==1.16.4
+numpy==1.22.0
 opencv_python==4.2.0.34
 py_slippi==1.3.0
 mss==6.1.0
